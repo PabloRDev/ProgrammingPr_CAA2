@@ -9,7 +9,7 @@
 //////////////////////////////////
 
 // Parse a tDateTime from string information
-void date_parse(tDate* date, const char* s_date) {
+void date_parse(tDate *date, const char *s_date) {
     // Check output data
     assert(date != NULL);
 
@@ -22,7 +22,7 @@ void date_parse(tDate* date, const char* s_date) {
 }
 
 // Initialize the properties
-void properties_init(tProperties* data) {
+void properties_init(tProperties *data) {
     /////////////
     // Set the initial number of elements to zero.
     data->count = 0;
@@ -40,11 +40,11 @@ int properties_len(tLandlord data) {
 // Initialize the landlords:
 // Given a structure of type tLandlords, it initializes it correctly
 //obtaining an empty structure.
-void landlords_init(tLandlords* data) {
+void landlords_init(tLandlords *data) {
     // Ex. 2a
     /////////////
     // Set the initial number of elements to zero.
-    data->elems=NULL;
+    data->elems = NULL;
     data->count = 0;
     /////////////
 }
@@ -63,7 +63,7 @@ int landlords_len(tLandlords data) {
 //////////////////////////////////////
 
 // Parse input from CSVEntry
-void tenant_parse(tTenant* data, tCSVEntry entry) {
+void tenant_parse(tTenant *data, tCSVEntry entry) {
     // TODO
     char start_date[11];
     char end_date[11];
@@ -91,7 +91,7 @@ void tenant_parse(tTenant* data, tCSVEntry entry) {
 }
 
 ////////////////////////////////////////
-void landlords_process_tenant(tLandlords* data, tTenant tenant) {
+void landlords_process_tenant(tLandlords *data, tTenant tenant) {
     // TODO
     int idx;
 
@@ -117,19 +117,19 @@ void landlords_process_tenant(tLandlords* data, tTenant tenant) {
 
 
 // Get a property
-void property_get(tLandlord data, int index, char* buffer) {
+void property_get(tLandlord data, int index, char *buffer) {
     // TODO
     assert(index < data.properties.count);
     sprintf(buffer, "%s;%s,%d;%s",
-        data.properties.elems[index].cadastral_ref,
-        data.properties.elems[index].address.street,
-        data.properties.elems[index].address.number,
-        data.properties.elems[index].landlord_id
+            data.properties.elems[index].cadastral_ref,
+            data.properties.elems[index].address.street,
+            data.properties.elems[index].address.number,
+            data.properties.elems[index].landlord_id
     );
 }
 
 // Parse input from CSVEntry
-void property_parse(tProperty* data, tCSVEntry entry) {
+void property_parse(tProperty *data, tCSVEntry entry) {
     // TODO
     // Check input data (Pre-conditions)
     assert(data != NULL);
@@ -145,7 +145,7 @@ void property_parse(tProperty* data, tCSVEntry entry) {
 ////////////////////////////////////////
 
 // Add a new property
-void landlord_add_property(tLandlords* data, tProperty property) {
+void landlord_add_property(tLandlords *data, tProperty property) {
     // TODO
     int idx_landlord;
 
@@ -165,24 +165,24 @@ void landlord_add_property(tLandlords* data, tProperty property) {
             assert(property_count < MAX_PROPERTIES);
             property_cpy(&(data->elems[idx_landlord].properties.elems[property_count]), property);
             data->elems[idx_landlord].properties.count++;
-            data->elems[idx_landlord].tax = data->elems[idx_landlord].tax + AMOUNT_NO_RENT*12;
+            data->elems[idx_landlord].tax = data->elems[idx_landlord].tax + AMOUNT_NO_RENT * 12;
         }
     }
 }
 
 // Get a landlord
-void landlord_get(tLandlords data, int index, char* buffer) {
+void landlord_get(tLandlords data, int index, char *buffer) {
     // TODO
     assert(index < data.count);
     sprintf(buffer, "%s;%s,%.1f",
-        data.elems[index].name,
-        data.elems[index].id,
-        data.elems[index].tax
+            data.elems[index].name,
+            data.elems[index].id,
+            data.elems[index].tax
     );
 }
 
 // Parse input from CSVEntry
-void landlord_parse(tLandlord* data, tCSVEntry entry) {
+void landlord_parse(tLandlord *data, tCSVEntry entry) {
     // TODO
     // Check input data (Pre-conditions)
     assert(data != NULL);
@@ -197,27 +197,31 @@ void landlord_parse(tLandlord* data, tCSVEntry entry) {
 ////////////////////////////////////////
 
 // Add a new landlord
-void landlords_add(tLandlords* data, tLandlord landlord) {
-    // TODO: ex. 2b
-    int idx;
-
+void landlords_add(tLandlords *data, tLandlord landlord) {
     // Check input data (Pre-conditions)
     assert(data != NULL);
 
     // Check if an entry with this data already exists
-    idx = landlords_find(*data, landlord.id);
+    const int idx = landlords_find(*data, landlord.id);
 
     // If it does not exist, create a new entry
     if (idx < 0) {
-        assert(data->count < MAX_LANDLORDS);
-        landlord_cpy(&(data->elems[data->count]), landlord);
+        // Reallocate memory
+        tLandlord *temp = realloc(data->elems, (data->count + 1) * sizeof(tLandlord));
+        if (temp == NULL) {
+            printf("\n Error: not enough free memory\n");
+            return;
+        }
+
+        data->elems = temp;
+        // Copy landlord to next landlord data
+        landlord_cpy((&(data->elems[data->count])), landlord);
         data->count++;
-    }
+    } else { printf("Landlord with ID '%s' already exists.\n", landlord.id); };
 }
 
 // Remove a landlord
-void landlords_del(tLandlords* data, char* id)
-{
+void landlords_del(tLandlords *data, char *id) {
     // Ex. 2d
 }
 
@@ -228,12 +232,12 @@ bool mismatch_tax_declaration(tLandlords expected, tLandlords declarant, int ind
 }
 
 // Copy the data from the source to destination
-void landlords_cpy(tLandlords* destination, tLandlords source) {
+void landlords_cpy(tLandlords *destination, tLandlords source) {
     // Ex. 2c
     int i;
 
     destination->count = source.count;
-    for(i = 0 ; i < landlords_len(source) ; i++) {
+    for (i = 0; i < landlords_len(source); i++) {
         landlord_cpy(&(destination->elems[i]), source.elems[i]);
         // we want to copy all fields from source.elems[i] but want
         // to set tax to 0 in the expected landlords
@@ -242,16 +246,15 @@ void landlords_cpy(tLandlords* destination, tLandlords source) {
 }
 
 // [AUX METHOD] Return the position of a tenant entry with provided information. -1 if it does not exist
-int landlords_find(tLandlords data, const char* id) {
+int landlords_find(tLandlords data, const char *id) {
     int i;
     int res = -1;
 
     i = 0;
     while ((i < data.count) && (res < 0)) {
-        if((strcmp(data.elems[i].id, id) == 0)) {
+        if ((strcmp(data.elems[i].id, id) == 0)) {
             res = i;
-        }
-        else {
+        } else {
             i++;
         }
     }
@@ -261,7 +264,7 @@ int landlords_find(tLandlords data, const char* id) {
 
 
 // [AUX METHOD] Return the position of a tenant entry with provided information. -1 if it does not exist
-int landlords_find_by_cadastral_ref(tLandlords data, const char* id) {
+int landlords_find_by_cadastral_ref(tLandlords data, const char *id) {
     int i, j;
     int res = -1;
 
@@ -269,7 +272,7 @@ int landlords_find_by_cadastral_ref(tLandlords data, const char* id) {
     while ((i < data.count) && (res < 0)) {
         j = 0;
         while ((j < data.elems[i].properties.count) && (res < 0)) {
-            if((strcmp(data.elems[i].properties.elems[j].cadastral_ref, id) == 0)) {
+            if ((strcmp(data.elems[i].properties.elems[j].cadastral_ref, id) == 0)) {
                 res = i;
             }
             j++;
@@ -282,7 +285,7 @@ int landlords_find_by_cadastral_ref(tLandlords data, const char* id) {
 
 
 // [AUX METHODS] Copy the data from the source to destination
-void landlord_cpy(tLandlord* destination, tLandlord source) {
+void landlord_cpy(tLandlord *destination, tLandlord source) {
     strcpy(destination->name, source.name);
     strcpy(destination->id, source.id);
     destination->tax = source.tax;
@@ -292,16 +295,15 @@ void landlord_cpy(tLandlord* destination, tLandlord source) {
 }
 
 // [AUX METHOD] Return the position of a property entry with provided information. -1 if it does not exist
-int properties_find(tProperties data, const char* cadastral_ref) {
+int properties_find(tProperties data, const char *cadastral_ref) {
     int i;
     int res = -1;
 
     i = 0;
     while ((i < data.count) && (res < 0)) {
-        if((strcmp(data.elems[i].cadastral_ref, cadastral_ref) == 0)) {
+        if ((strcmp(data.elems[i].cadastral_ref, cadastral_ref) == 0)) {
             res = i;
-        }
-        else {
+        } else {
             i++;
         }
     }
@@ -309,7 +311,7 @@ int properties_find(tProperties data, const char* cadastral_ref) {
 }
 
 // [AUX METHODS] Copy the data from the source to destination
-void property_cpy(tProperty* destination, tProperty source) {
+void property_cpy(tProperty *destination, tProperty source) {
     strcpy(destination->cadastral_ref, source.cadastral_ref);
     strcpy(destination->address.street, source.address.street);
     destination->address.number = source.address.number;
@@ -317,6 +319,6 @@ void property_cpy(tProperty* destination, tProperty source) {
 }
 
 // Remove all elements
-void landlords_free(tLandlords* data) {
+void landlords_free(tLandlords *data) {
     // Ex. 2e
 }
