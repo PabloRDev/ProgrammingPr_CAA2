@@ -37,11 +37,14 @@ int properties_len(tLandlord data) {
     //////////////
 }
 
-// Initialize the landlords
+// Initialize the landlords:
+// Given a structure of type tLandlords, it initializes it correctly
+//obtaining an empty structure.
 void landlords_init(tLandlords* data) {
     // Ex. 2a
     /////////////
     // Set the initial number of elements to zero.
+    data->elems=NULL;
     data->count = 0;
     /////////////
 }

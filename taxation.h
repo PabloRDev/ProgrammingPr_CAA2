@@ -49,7 +49,7 @@ typedef struct _tLandlord {
 } tLandlord;
 
 typedef struct _tLandlords {
-    tLandlord elems[MAX_LANDLORDS];
+    tLandlord* elems;
     int count;
 } tLandlords;
 
