@@ -1,12 +1,7 @@
 #ifndef __TAXATION_H__
 #define __TAXATION_H__
 #include "csv.h"
-
-typedef struct _tDate {
-    int day;
-    int month;
-    int year;
-} tDate;
+#include "date.h"
 
 // Ex 1: Define data types here...
 
