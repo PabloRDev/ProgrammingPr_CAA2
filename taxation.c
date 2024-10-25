@@ -220,9 +220,32 @@ void landlords_add(tLandlords *data, tLandlord landlord) {
     } else { printf("Landlord with ID '%s' already exists.\n", landlord.id); };
 }
 
-// Remove a landlord
+// Remove a landlord:
+// Given a structure of type tLandlords and an
+//owner id, remove this owner from the list. If no owner with this id exists, then
+//the method does nothing.
 void landlords_del(tLandlords *data, char *id) {
-    // Ex. 2d
+    assert(data != NULL);
+
+    // Check if an entry with this data exists
+    const int idx = landlords_find(*data, id);
+
+    // If it does exist
+    if (idx >= 0) {
+        // Shift all landlords after the found one to the left
+        for (int i = idx; i < data->count - 1; i++) {
+            data->elems[i] = data->elems[i + 1]; // Move the next landlord to the current position
+        }
+
+        // Decrease the count of landlords
+        data->count--;
+
+        // Reallocate memory
+        tLandlord *temp = realloc(data->elems, data->count * sizeof(tLandlord));
+        if (temp != NULL) {
+            data->elems = temp;
+        }
+    }
 }
 
 // returns true if field tax of expected[index] is greater than the one in declarant[index]
@@ -240,7 +263,7 @@ void landlords_cpy(tLandlords *destination, tLandlords source) {
 
     destination->elems = malloc((source.count * sizeof(tLandlord)));
     if (destination->elems == NULL) {
-            printf("\n Error: not enough free memory\n");
+        printf("\n Error: not enough free memory\n");
     }
     destination->count = source.count;
 
