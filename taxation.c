@@ -348,7 +348,15 @@ void property_cpy(tProperty *destination, tProperty source) {
     strcpy(destination->landlord_id, source.landlord_id);
 }
 
-// Remove all elements
+// Remove all elements:
+// Given a structure of type tLandlords,
+//remove all its contents, obtaining an empty structure.
 void landlords_free(tLandlords *data) {
-    // Ex. 2e
+    assert(data != NULL);
+
+    if (data->elems == NULL) { return; }
+    // Free the memory and counter to zero
+    free(data->elems);
+    data->elems = NULL;
+    data->count = 0;
 }
