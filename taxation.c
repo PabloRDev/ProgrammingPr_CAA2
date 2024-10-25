@@ -231,12 +231,19 @@ bool mismatch_tax_declaration(tLandlords expected, tLandlords declarant, int ind
     return (expected.elems[index].tax > declarant.elems[index].tax);
 }
 
-// Copy the data from the source to destination
+// Copy the data from the source to destination:
+// Copies a structure of type tLandlords into another structure
+//of the same type, except for the amount to pay field, which is initialized to zero
+//in all owners.
 void landlords_cpy(tLandlords *destination, tLandlords source) {
-    // Ex. 2c
     int i;
 
+    destination->elems = malloc((source.count * sizeof(tLandlord)));
+    if (destination->elems == NULL) {
+            printf("\n Error: not enough free memory\n");
+    }
     destination->count = source.count;
+
     for (i = 0; i < landlords_len(source); i++) {
         landlord_cpy(&(destination->elems[i]), source.elems[i]);
         // we want to copy all fields from source.elems[i] but want
