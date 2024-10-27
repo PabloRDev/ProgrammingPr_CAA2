@@ -15,6 +15,17 @@
 #define MAX_PERSON_ID 9
 #define AMOUNT_NO_RENT 150.0
 
+typedef struct _tNotDeclared {
+    char cadastral_ref[MAX_CADASTRAL_REF];
+    char landlord_id[MAX_PERSON_ID];
+    int year;
+} tNotDeclared;
+
+typedef struct _tNotDeclaredData {
+    tNotDeclared elems[MAX_PROPERTIES];
+    int count;
+} tNotDeclaredData;
+
 typedef struct _tTenant {
     tDate start_date;
     tDate end_date;
@@ -53,6 +64,10 @@ typedef struct _tLandlords {
     int count;
 } tLandlords;
 
+typedef struct _tLandlordsE {
+    tLandlord elems[MAX_LANDLORDS];
+    int count;
+} tLandlordsE;
 
 //////////////////////////////////
 // Available methods
@@ -106,8 +121,10 @@ void landlord_get(tLandlords data, int index, char* buffer);
 // Get a property data in a string
 void property_get(tLandlord data, int index, char* buffer);
 
-// returns true if field tax of expected[index] is greater than the one in declarant[index]
+// Returns true if field tax of expected[index] is greater than the one in declarant[index]
 bool mismatch_tax_declaration(tLandlords expected, tLandlords declarant, int index);
+// Count properties not declared in a given year by their current owners only. Ignore if the owner was different at the time.
+int countNotDeclared(tLandlordsE landlords, int year, tNotDeclaredData notDeclared);
 
 /////////////////////////////////////
 // Aux methods

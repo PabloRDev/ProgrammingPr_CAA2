@@ -254,6 +254,27 @@ bool mismatch_tax_declaration(tLandlords expected, tLandlords declarant, int ind
     return (expected.elems[index].tax > declarant.elems[index].tax);
 }
 
+// Count properties not declared in a given year by their current owners only. Ignore if the owner was different at the time.
+int countNotDeclared(tLandlordsE landlords, int year, tNotDeclaredData notDeclared) {
+    int properties = 0;
+
+    for (int i = 0; i < notDeclared.count; i++) {
+        const tNotDeclared notDeclaredProp = notDeclared.elems[i];
+
+        if (notDeclaredProp.year == year) {
+            for (int j = 0; j < landlords.count; j++) {
+                const tLandlord landlord = landlords.elems[j];
+
+                if (strcmp(notDeclaredProp.landlord_id, landlord.id) == 0) {
+                    properties++;
+                    break; // Match found
+                }
+            }
+        }
+    }
+    return properties;
+}
+
 // Copy the data from the source to destination:
 // Copies a structure of type tLandlords into another structure
 //of the same type, except for the amount to pay field, which is initialized to zero
