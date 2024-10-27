@@ -261,17 +261,12 @@ int countNotDeclared(tLandlordsE landlords, int year, tNotDeclaredData notDeclar
     for (int i = 0; i < notDeclared.count; i++) {
         const tNotDeclared notDeclaredProp = notDeclared.elems[i];
 
-        if (notDeclaredProp.year == year) {
-            for (int j = 0; j < landlords.count; j++) {
-                const tLandlord landlord = landlords.elems[j];
-
-                if (strcmp(notDeclaredProp.landlord_id, landlord.id) == 0) {
-                    properties++;
-                    break; // Match found
-                }
+        if (isPropertyNotDeclaredInYear(&notDeclaredProp, year) &&
+            isCurrentOwner(&notDeclaredProp, &landlords)) {
+            properties++;
             }
-        }
     }
+
     return properties;
 }
 
@@ -313,6 +308,20 @@ int landlords_find(tLandlords data, const char *id) {
     return res;
 }
 
+//[AUX METHOD]
+int isPropertyNotDeclaredInYear(const tNotDeclared* notDeclaredProp, int year) {
+    return notDeclaredProp->year == year;
+}
+
+//[AUX METHOD]
+int isCurrentOwner(const tNotDeclared* notDeclaredProp, const tLandlordsE* landlords) {
+    for (int j = 0; j < landlords->count; j++) {
+        if (strcmp(notDeclaredProp->landlord_id, landlords->elems[j].id) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 // [AUX METHOD] Return the position of a tenant entry with provided information. -1 if it does not exist
 int landlords_find_by_cadastral_ref(tLandlords data, const char *id) {

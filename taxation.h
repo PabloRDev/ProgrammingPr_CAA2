@@ -60,7 +60,7 @@ typedef struct _tLandlord {
 } tLandlord;
 
 typedef struct _tLandlords {
-    tLandlord* elems;
+    tLandlord *elems;
     int count;
 } tLandlords;
 
@@ -73,13 +73,13 @@ typedef struct _tLandlordsE {
 // Available methods
 //////////////////////////////////
 // Initialize the properties data
-void properties_init(tProperties* data);
+void properties_init(tProperties *data);
 
 // Get the number of properties
 int properties_len(tLandlord data);
 
 // Initialize the landlords data
-void landlords_init(tLandlords* data);
+void landlords_init(tLandlords *data);
 
 // Get the number of landlords
 int landlords_len(tLandlords data);
@@ -89,40 +89,41 @@ int landlords_len(tLandlords data);
 /////////////////////////////////////
 
 // Parse input from CSVEntry
-void landlord_parse(tLandlord* data, tCSVEntry entry);
+void landlord_parse(tLandlord *data, tCSVEntry entry);
 
 // Add a new tenant
-void landlords_add(tLandlords* data, tLandlord tenant);
+void landlords_add(tLandlords *data, tLandlord tenant);
 
 //Remove a landlord
-void landlords_del(tLandlords* data, char* id);
+void landlords_del(tLandlords *data, char *id);
 
 // Remove all elements
-void landlords_free(tLandlords* data);
+void landlords_free(tLandlords *data);
 
 // Copy the data from the source to destination
-void landlords_cpy(tLandlords* destination, tLandlords source);
+void landlords_cpy(tLandlords *destination, tLandlords source);
 
 // Parse input from CSVEntry
-void property_parse(tProperty* data, tCSVEntry entry);
+void property_parse(tProperty *data, tCSVEntry entry);
 
 // Add a new property
-void landlord_add_property(tLandlords* data, tProperty property);
+void landlord_add_property(tLandlords *data, tProperty property);
 
 // Parse input from CSVEntry
-void tenant_parse(tTenant* data, tCSVEntry entry);
+void tenant_parse(tTenant *data, tCSVEntry entry);
 
 // Calculate and update taxation given tenant
-void landlords_process_tenant(tLandlords* data, tTenant tenant);
+void landlords_process_tenant(tLandlords *data, tTenant tenant);
 
 // Get landlord data in a string
-void landlord_get(tLandlords data, int index, char* buffer);
+void landlord_get(tLandlords data, int index, char *buffer);
 
 // Get a property data in a string
-void property_get(tLandlord data, int index, char* buffer);
+void property_get(tLandlord data, int index, char *buffer);
 
 // Returns true if field tax of expected[index] is greater than the one in declarant[index]
 bool mismatch_tax_declaration(tLandlords expected, tLandlords declarant, int index);
+
 // Count properties not declared in a given year by their current owners only. Ignore if the owner was different at the time.
 int countNotDeclared(tLandlordsE landlords, int year, tNotDeclaredData notDeclared);
 
@@ -130,20 +131,24 @@ int countNotDeclared(tLandlordsE landlords, int year, tNotDeclaredData notDeclar
 // Aux methods
 /////////////////////////////////////
 
+int isPropertyNotDeclaredInYear(const tNotDeclared* notDeclaredProp, int year);
+
+int isCurrentOwner(const tNotDeclared* notDeclaredProp, const tLandlordsE* landlords);
+
 // [AUX METHOD] Return the position of a property entry with provided information. -1 if it does not exist
-int properties_find(tProperties data, const char* cadastral_ref);
+int properties_find(tProperties data, const char *cadastral_ref);
 
 // [AUX METHODS] Copy the data from the source to destination
-void property_cpy(tProperty* destination, tProperty source);
+void property_cpy(tProperty *destination, tProperty source);
 
 // [AUX METHODS] returns the position of a landlord that has a property with that cadastral ref
-int landlords_find_by_cadastral_ref(tLandlords data, const char* cadastral_ref);
+int landlords_find_by_cadastral_ref(tLandlords data, const char *cadastral_ref);
 
 // [AUX METHOD] Return the position of a landl entry with that landlord id. -1 if it does not exist
-int landlords_find(tLandlords data, const char* landlord_id);
+int landlords_find(tLandlords data, const char *landlord_id);
 
 // [AUX METHODS] Copy the data from the source to destination
-void landlord_cpy(tLandlord* destination, tLandlord source);
+void landlord_cpy(tLandlord *destination, tLandlord source);
 
 ////////////////////////////////////////////
 #endif
